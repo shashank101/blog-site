@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<script type="text/javascript" src="{{url_for('static', filename='sha512.js')}}"></script>
+	<script type="text/javascript" src="{{url_for('static', filename='input_validation.js')}}"></script>
+    <!-- This part is made to make the website mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+-
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>
+      Security Blog
+    </title>
+  </head>
+  <body background="/static/background.jpg">
+    <div class="container">
+      <h1 align="center"> Log In </h1>
+      <div class="jumbotron vertical-center">
+        <div align="center">
+		  {% if message %}
+			<p style="color:red;">{{ message }}</p>
+		  {% endif %}
+          <form onsubmit= "return password_sha512() && input_sanitization()" action="{{ url_for('login') }}" method="post">
+            Email Address:<br>
+            <input class = "validate_email" type="email" pattern = ".{,50}" name="email" maxlength="50"required>
+            <br>
+            Password:<br>
+            <input id="login_password" class = "validate_input" type='password' name="password" required title="8 characters minimum">
+            <br />
+            <p>{{ recaptcha }}</p>
+            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+            <br /><br />
+            <input class="btn btn-primary" type="submit" name="login submit" value="Log In" autocomplete="off">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          </form>
+        </div>
+      </div>
+      <div class = "jumbotron vertical-center">
+		<div align="center">
+			<h3>Do you not have an account with us?</h3>
+			<h3>If you want to learn more about security concepts, please register with us!</h3>
+			<button onclick="location.href='{{ url_for('registration') }}';" type="button" class="btn btn-primary">Register here</button>
+		</div>
+      </div>
+    </div>
+    
+	<script type = "text/javascript">
+	function password_sha512(){
+		document.getElementById('login_password').value = SHA512(document.getElementById('login_password').value);
+	}
+	</script>
+  </body>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<style>
+		img {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			width: 50%;
+		}
+	</style>
+	<script type="text/javascript" src="{{url_for('static', filename='input_validation.js')}}"></script> 
+    <!-- This part is made to make the website mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>
+      Security Blog
+    </title>
+  </head>
+  <body background="/static/background.jpg">
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-fixed-top">
+		<a class="navbar-brand" href="{{ url_for('home') }}">Security Blog</a>
+	    <ul class="navbar-nav ml-auto">
+		  <li class="nav-item">
+			<form action="{{ url_for('logout') }}" method="post">
+			  <input class="btn btn-primary" type="submit" value="Logout">
+			  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+		    </form>
+		  </li>
+	    </ul>
+	  </nav>
+    <div class="container">
+      <h1 align="center"> Hello {{ name }} </h1>
+      <div class="jumbotron vertical-center">
+		  <h3 align="left">WIFI Deauthentication Attack</h2>
+		  <div class = "embed-responsive embed-responsive-16by9">
+			<iframe width="560" height="315" src="https://www.youtube.com/embed/KSv1ZWgpaNE?start=2" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		  </div>
+		  <br />
+		  <p>The goal of this project is to demonstrate how a WiFi deauthenticator attack works. The attacker detects the WiFi network and retrieves it’s BSSID and the channel it operates on. Once done, this network will be flooded with deauthentication packets to overwhelm the network and deauthenticate all the users connected to the network.</p>
+		  <br />
+		  <h3>Architecture Overview</h3>
+		  <p>The setup consists of a machine using Linux machine with ability to connect to a WiFi base station. Install airmon-ng, airodump-ng and aireplay-ng on the machines. Kali Linux or parrot Linux are one of the best versions as it will have these programs pre-installed. </p>
+		  <br />
+		  <p>This prerequisite for this is we have a machine with the ability to connect to a WiFi network. Using a given set of instructions, the wireless base station will be flooded with deauthentication packets, rendering the base station completely useless. All the devices connected to the WiFi network will be deauthenticated/disconnected from the network. </p>
+		  <br />
+		  <br />
+		  <h3>Prerequisites:</h3>
+		  <p>1) Install Airmon-ng, airodump-ng and aireplay-ng on the attacking machine</p>
+		  <p>2) Use either use a USB WiFi adapter capable of sending deauthentication packets, or use the laptops WiFi adapter to launch a deauthentication attack</p>
+		  <p>3) The victim’s WiFi network should be in your system’s WiFi adapter’s range.</p>
+		  <br />
+		  <br />
+		  <h3>Attack Steps</h3>
+		  <p>Perform the steps mentioned below on the attackers machine to launch this attack</p>
+		  <h4>Step 1: Switch the WiFi adapter to monitor mode</h4>
+		  <p>The WiFi adapter is operated in Promiscuous mode by default. The adapter can be switched to monitor mode by using Ifconfig and iwconfig commands as shown below.</p>
+		  <br />
+		  <img src="/static/ifconfig.jpg" class="img-responsive" alt="Oops! Something went wrong.">
+		  <p align="center"><b>Figure 1.  Interfaces on the Kali Linux System</b></p>
+		  <br />
+		  <img src="/static/monitor.jpg" class="img-responsive" alt="Oops! Something went wrong.">
+		  <p align="center"><b>Figure 2.  Commands to change the WiFi Adapter to Monitor mode</b></p>
+		  <br />
+		  <br />
+		  <h4>Step 2: Scan nearby available WiFi networks</h4>
+		  <p>Airodump command can be used to scan nearby wireless base stations to be deauthenticated. We will be deauthenticating users connected wireless network “Raga”. Airodump will be used to find out the BSSID and the channel in which network operates on.</p>
+		  <br />
+		  <img src="/static/airodump.jpg" class="img-responsive" alt="Oops! Something went wrong.">
+		  <p align="center"><b>Figure 3.  Wireless Base Stations in the systems WiFi adapter’s range</b></p>
+		  <br />
+		  <br />
+		  <h4>Step 3: Send Deauthentication Packets to the wireless base station</h4>
+		  <p>First, change the USB wireless adapters operating channel to the channel of the victim’s network. In this case, the victims network is on channel 9. Hence, we will use iwconfig to change the adapters channel of operation.</p>
+		  <br />
+		  <img src="/static/channel.jpg" class="img-responsive" alt="Oops! Something went wrong.">
+		  <p align="center"><b>Figure 4.  Switching the adapter to same channel as the victim base station</b></p>
+		  <br />
+		  <p>Aireplay commands will be used to send deauthentication packets to the wireless base station.</p>
+		  <br />
+		  <img class="img-responsive" src="/static/aireplay.jpg" alt="Oops! Something went wrong.">
+		  <p align="center"><b>FIgure 5.  Launching the deauthentication attack using aireplay-ng</b></p>
+		  <br />
+		  <p>-0: This just indicates that the comment after this specifies the number of deauthentication packets to be sent.</p>
+		  <p>0: Any number can be given here (Ex. 1,2, 1000 etc.). When the number 0 is given, it specifies that unlimited number of deauthentication packets will be sent unless the program is force stopped using CTRL+C.</p>
+		  <p>-a: This specifies that the comment after this will be the base station ID (BSSID) of the wireless network.</p>
+		  <p>A0:A3:E2:3D:64:95 :This is the BSSID of the network Raga that we are attacking.</p>
+		  <p>Wlan1: This is the USB wireless adapter which will be used to send the deauthentication packets.</p>
+		  <br />
+		  <br />
+		  <p>Once, you run the above command, the wireless adapter will send deauthentication packets and the users connected to the WiFi network will be deauthenticated.</p>
+		  <br />
+		  <img src="{{url_for('static', filename='deauth.jpg')}}" class="img-responsive" alt="Oops! Something went wrong." />
+		  <p align="center"><b>FIgure 6.  Launching the Deauthentication attack</b></p>
+		  <br />
+		  <p>Since we will be sending infinite number of packets, the users will be unable to connect to the network until the program is forcefully stopped.</p>
+		  <br />
+		  <br />
+		  <h3>Conclusion</h3>
+		  <p>This assignment demonstrates how a network, public or private, is vulnerable to wireless deauthentication attacks. The attacker needs no information about the WiFi network’s password to launch this kind of attack. This attack can be further improved by launching an Evil Twin attack which can be used to trap the packets from other users connected to the network.</p>
+		  <br />
+		  <br />
+		  <p><i>Authors: Suraj Kattige, Shashank Kattige</i></p>
+      </div>
+      <br />
+      <div class="jumbotron vertical-center">
+		<div align="center">
+			{% if message %}
+			  <p style="color:red;">{{ message }}</p>
+		    {% endif %}
+		</div>
+		<h5>We strive to provide good articles and design a secure website for you, hence your comments are valuable to us! Please give us a feedback on the website.</h5>
+		<form onsubmit = "return input_sanitization()" action="{{ url_for('feedback') }}" method = "post">
+			<div class="col-md-12">
+			  <textarea rows="5" class="form-control validate_input" name="feedback" required></textarea>
+			</div>
+			<br />
+			<div align="center">
+			  <input class="btn btn-primary" type="submit" value="Submit">
+			</div>
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+		</form>
+      </div>
+    </div>
+    <script>
+      var inactivityTime = function() {
+		  var t;
+		  window.onload = resetTimer;
+		  document.onmousemove = resetTimer;
+		  document.onkeypress = resetTimer;
+		  
+		  function logout() {
+			  alert("You are now logged out.")
+		  }
+		  
+		  function resetTimer() {
+			  clearTimeout(t);
+			  t = setTimeout(logout, 600000);
+		  }
+    </script>
+  </body>
+  </body>
+  </body>
+  </body>
+</html>

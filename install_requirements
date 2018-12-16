@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Update and upgrade the system
+sudo rm -f /var/lib/dpkg/lock
+sudo rm -f /var/cache/apt/archives/lock
+sudo apt-get update -y
+sudo rm -f /var/lib/dpkg/lock
+sudo rm -f /var/cache/apt/archives/lock
+sudo apt-get upgrade -y
+sudo rm -f /var/lib/dpkg/lock
+sudo rm -f /var/cache/apt/archives/lock
+
+# Install all the dependencies
+sudo apt-get install python3 -y
+sudo apt-get install python3-pip -y
+sudo apt-get install mysql-server -y
+sudo apt-get install python3-dns
+#sudo -H pip3 install pyDNS
+sudo -H pip3 install flask
+sudo -H pip3 install flask-recaptcha
+sudo -H pip3 install validate_email
+sudo -H python3 -m pip install mysql-connector
+sudo -H pip3 install PyJWT
+sudo -H pip3 install requests
+sudo apt-get install libssl-dev -y
+
+# Generate a self-signed digital certificate
+sudo openssl genrsa -out /etc/ssl/private/server_key.key 4096
+sudo mkdir -p /etc/ssl/requests
+sudo openssl req -new -key /etc/ssl/private/server_key.key -out /etc/ssl/requests/server_req.csr
+sudo openssl x509 -req -days 365 -in /etc/ssl/requests/server_req.csr -signkey /etc/ssl/private/server_key.key -out /etc/ssl/certs/server_cert.crt
+
+# Run the mysql_secure_installation
+sudo service mysql start
+sudo mysql_secure_installation
+
+read -p "PLease enter the root password that was given during mysql secure installation: " -s PASSWORD
+sudo mysql -u root -p"$PASSWORD" < ./MYSQL_INSTALL.sql
+
+echo -e "\nDatabase Installation Successful\n\n"
+

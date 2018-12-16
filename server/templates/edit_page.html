@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<script type="text/javascript" src="{{url_for('static', filename='sha512.js')}}"></script>
+	<script type="text/javascript" src="{{url_for('static', filename='input_validation.js')}}"></script>
+    <!-- This part is made to make the website mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+-
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>
+      Security Blog
+    </title>
+  </head>
+  <body background="/static/background.jpg">
+	<nav class="navbar navbar-expand-sm bg-dark navbar-dark navbar-fixed-top">
+	  <a class="navbar-brand" href="{{ url_for('home') }}">Security Blog</a>
+	  <ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+		  <button onclick="location.href='{{ url_for('home') }}';" type="button" class="btn btn-primary">Home</button>
+		</li>
+	  </ul>
+	  <ul class="navbar-nav ml-auto">
+		<li class="nav-item">
+		  <form action="{{ url_for('logout') }}" method="post">
+			<input class="btn btn-primary" type="submit" value="Logout">
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+		  </form>
+		</li>
+	  </ul>
+	</nav>
+	<div class="container">
+	  <div class="jumbotron vertical-center">
+        <div align="center">
+		  {% if message %}
+			<p style="color:red;">{{ message }}</p>
+		  {% endif %}
+		  <form onsubmit = "return input_sanitization()" action="{{ url_for('edit_page_successful') }}" method = "post">
+			<div class="col-md-12">
+			  <textarea rows="25" class="form-control validate_input" name="edit_page_content" required>{{content}}</textarea>
+			</div>
+			<br />
+			<div align="center">
+			  <input class="btn btn-primary" type="submit" value="Submit">
+			  <button onclick="location.href='{{ url_for('home') }}';" type="button" class="btn btn-primary">Cancel</button> 
+			</div>
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+		</form>
+		</div>
+      </div>   
+    </div>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<script type="text/javascript" src="{{url_for('static', filename='input_validation.js')}}"></script> 
+    <!-- This part is made to make the website mobile friendly -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>
+      "Security Blog"
+    </title>
+  </head>
+  <body background="/static/background.jpg">
+    <div class="container">
+      <h1 align="center">Registration</h1>
+      <div class="jumbotron">
+        <div>
+          <form name='registration' onsubmit="return input_sanitization()" action="{{ url_for('register_user') }}" method="post">
+            <table align="center">
+			  {% if message %}
+				  <p style="color:red;">{{ message }}</p>
+			  {% endif %}
+              <tr>
+                <td>First Name</td>
+                <td><input id = "reg_fname" class="validate_input" type="text" pattern = ".{,50}" name="reg_fname" maxlength="50" required title="Should be less than 50 characters"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Last Name</td>
+                <td><input id="reg_lname" class="validate_input" type="text" pattern = ".{,50}" name="reg_lname" maxlength="50" required title="Should be less than 50 characters"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Email Address</td>
+                <td><input id="reg_email" class="validate_email" type="email" pattern = ".{,50}" name="reg_email"  maxlength="50" required="Should be less than 50 characters and be a valid email address"></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Password</td>
+                <td><input id="reg_password" type='password' name="password" pattern=".{8,}" required title="8 characters minimum"></td>
+                <td><a href="#" data-toggle="popover" title="Password Policy" data-trigger="focus" data-content="The password should have the following attributes:<br />1) Length greater than 8 characters<br />2) Contains atleast 1 lowercase (a-z) character<br />3) Contains atleast 1 uppercase (A-Z) character<br />4) Contains atleast 1 numeric (0-9) character<br />5) Contains a special character (@._!()-+*^)" data-html="true">Password Policy</a></td>
+              </tr>
+              <tr>
+                <td>Confirm Password</td>
+                <td>
+                  <input id="reg_confirm_password" type='password' pattern=".{8,}" name="confirm_password" required title="8 characters minimum">
+                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td><input type="submit" value="Register!"></td>
+                <td><input onclick="location.href='{{ url_for('root') }}';" type="button" value="Wait, I already have an account"></td>
+                <td></td>
+              </tr>
+            </table>
+           <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          </form>
+        </div>
+      </div>
+    </div>
+	<script>
+		$(document).ready(function(){
+			$('[data-toggle="popover"]').popover();
+		});
+	</script>
+  </body>
+</html>
